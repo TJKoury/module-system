@@ -1,0 +1,34 @@
+{
+  "name": "module-system",
+  "version": "1.0.0",
+  "description": "Module generator for projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TJKoury/module-system.git"
+  },
+  "keywords": [
+    "module",
+    "system",
+    "node",
+    "javascript"
+  ],
+  "author": "TJKoury",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/TJKoury/module-system/issues"
+  },
+  "homepage": "https://github.com/TJKoury/module-system#readme",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "lodash": "^4.0.0",
+    "uuid": "^2.0.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "should": "^8.1.1"
+  }
+}
