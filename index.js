@@ -43,26 +43,26 @@ var defaults = {};
  * */
 defaults.nodeModulesPath = path.join(
   process.cwd(),
-  "cesium-widget-node_modules"
+  "module_system_node_modules"
 );
 
 /**
  * @type{string}
  *
  * */
-defaults.prefix = "cesium-widget-module";
+defaults.prefix = "module-system";
 
 /**
  * @type{string}
  *
  * */
-defaults.description = "Empty Cesium-Widget Module";
+defaults.description = "empty-module";
 
 /**
  * @type{string}
  *
  * */
-defaults.name = "Empty Cesium-Widget Module";
+defaults.name = "empty-module";
 
 /**
  * @type{string}
@@ -74,7 +74,7 @@ defaults.version = "0.0.0";
  * @type{string}
  *
  * */
-defaults.author = "cesium-widget";
+defaults.author = "module-system";
 
 /**
  * @type{string}
