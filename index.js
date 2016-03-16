@@ -1,3 +1,5 @@
+var settings = require('./package.json');
+
 var uuid = require('uuid');
 
 var path = require('path');
@@ -11,6 +13,7 @@ var colors = require('colors');
  * JSDoc3 compliant tag-parser method.
  * @function genDoc
  **/
+
 module.genDoc = function () {
 
   var this_file = fs.readFileSync(module.filename, {encoding: 'utf8'});
@@ -35,7 +38,9 @@ module.genDoc = function () {
  * @type{object}
  *
  * */
-var defaults = {};
+
+var defaults = {} || settings.union_station_module_system.defaults;
+
 /*REQUIRED_END*/
 /**
  * @type{string}
@@ -43,7 +48,7 @@ var defaults = {};
  * */
 defaults.nodeModulesPath = path.join(
   process.cwd(),
-  "module_system_node_modules"
+  "usms_node_modules"
 );
 
 /**
@@ -74,7 +79,7 @@ defaults.version = "0.0.0";
  * @type{string}
  *
  * */
-defaults.author = "module-system";
+defaults.author = "union-station-module-system";
 
 /**
  * @type{string}
@@ -119,7 +124,7 @@ module.exports = function (argv) {
       if(argv.method){
 
         console.log(colors.red.underline('\n Method `'+argv.method+'` does not exist.\n'));
-	    console.log(colors.green("Choose method parameter '-method {method}' from options below:"));
+	      console.log(colors.green("Choose method parameter '-method {method}' from options below:"));
       }
 
       module.genDoc();
@@ -135,7 +140,7 @@ module.exports = function (argv) {
 }
 /*REQUIRED_END*/
 /**
- * Creates new Cesium-Widget Module.
+ * Creates New Module.
  * @method generate
  *
  * @param    {object}    argv Input options (from cmdline -key value)
@@ -158,7 +163,7 @@ module.generate = function(argv){
   // Time-based UUID generated for module
   var module_uuid = uuid.v4();
   argv.packageJSON.name = ([argv.prefix,argv.name,module_uuid].join("-")).replace(" ", "-");
-  
+
   if (!fs.existsSync(argv.nodeModulesPath)) {
     fs.mkdirSync(argv.nodeModulesPath);
   }
