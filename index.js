@@ -114,27 +114,41 @@ defaults.packageJSON = {
  **/
 module.exports = function (argv) {
 
-  if(argv){
-    if(argv.method && argv.method in module){
+  if(require.main === module){
 
-      return module[argv.method](argv);
+    if(argv){
 
+      if(argv.method
+         && argv.method in module
+         && argv.method!=='exports'){
+
+           return module[argv.method](argv);
+
+      }else if(argv.method === 'exports'){
+          this.argv = argv;
+          console.log(this);
+
+      }else{
+
+        if(argv.method){
+          
+          console.log(colors.red.underline('\n Method `'+argv.method+'` does not exist.\n'));
+  	      console.log(colors.green("Choose method parameter '-method {method}' from options below:"));
+
+        }
+
+        module.genDoc();
+
+      }
     }else{
 
-      if(argv.method){
-
-        console.log(colors.red.underline('\n Method `'+argv.method+'` does not exist.\n'));
-	      console.log(colors.green("Choose method parameter '-method {method}' from options below:"));
-      }
-
-      module.genDoc();
-
-      return null;
-
+      throw Error('missing arguments object');
     }
+
   }else{
 
-    throw Error('missing arguments object');
+    return module;
+
   }
 
 }
@@ -238,7 +252,7 @@ if (require.main == module) {
   } else {
 
     var _arguments = {};
-    for (var i = 0; i < process.argv.length; i++) {
+    for (var i = 2; i < process.argv.length; i++) {
       if (i % 2 == 0) {
         if(process.argv[i].indexOf("-")==0 || process.argv[i].indexOf("node")>-1) {
           _arguments[process.argv[i].substr(1)] = process.argv[i + 1];
