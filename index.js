@@ -173,8 +173,11 @@ module.generate = function(argv){
 
   // Time-based UUID generated for module
   var module_uuid = uuid.v4();
-  argv.packageJSON.name = ([argv.prefix,"-",argv.name,"__",module_uuid].join("")).replace(" ", "-");
-
+  
+  argv.packageJSON.id = module_uuid;
+  
+  argv.packageJSON.name = ([argv.prefix,"--",argv.name,"--",module_uuid].join("")).replace(" ", "-");
+  
   if (!fs.existsSync(argv.nodeModulesPath)) {
     fs.mkdirSync(argv.nodeModulesPath);
   }
