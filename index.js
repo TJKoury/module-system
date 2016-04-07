@@ -58,13 +58,13 @@ defaults.prefix = "union-station";
  * @type{string}
  *
  * */
-defaults.description = "union-station-module";
+defaults.description = "empty-module";
 
 /**
  * @type{string}
  *
  * */
-defaults.name = "union-station-module";
+defaults.name = "empty-module";
 
 /**
  * @type{string}
@@ -173,7 +173,7 @@ module.generate = function(argv){
 
   // Time-based UUID generated for module
   var module_uuid = uuid.v4();
-  argv.packageJSON.name = ([argv.prefix,argv.name,module_uuid].join("-")).replace(" ", "-");
+  argv.packageJSON.name = ([argv.prefix,":",argv.name,":",module_uuid].join("")).replace(" ", "-");
 
   if (!fs.existsSync(argv.nodeModulesPath)) {
     fs.mkdirSync(argv.nodeModulesPath);
