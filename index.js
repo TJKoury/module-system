@@ -39,35 +39,32 @@ module.genDoc = function () {
  *
  * */
 
-var defaults = {} || settings.union_station_module_system.defaults;
+var defaults = {}||settings.union_station_module_system.defaults;
 
 /*REQUIRED_END*/
 /**
  * @type{string}
  *
  * */
-defaults.nodeModulesPath = path.join(
-  process.cwd(),
-  "usms_node_modules"
-);
+defaults.nodeModulesPath = "node_modules";
 
 /**
  * @type{string}
  *
  * */
-defaults.prefix = "module-system";
+defaults.prefix = "union-station";
 
 /**
  * @type{string}
  *
  * */
-defaults.description = "empty-module";
+defaults.description = "union-station-module";
 
 /**
  * @type{string}
  *
  * */
-defaults.name = "empty-module";
+defaults.name = "union-station-module";
 
 /**
  * @type{string}
