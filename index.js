@@ -4,10 +4,11 @@ var uuid = require('uuid');
 
 var path = require('path');
 var _ = require('lodash');
+var colors = require('colors');
+
 var commands = process.argv;
 /*REQUIRED_START*/
 var fs = require('fs');
-var colors = require('colors');
 
 /**
  * JSDoc3 compliant tag-parser method.
@@ -110,6 +111,8 @@ defaults.packageJSON = {
  * @returns {object}
  **/
 module.exports = function (argv) {
+  
+  this.argv = argv;
 
   if(require.main === module){
 
@@ -122,15 +125,15 @@ module.exports = function (argv) {
            return module[argv.method](argv);
 
       }else if(argv.method === 'exports'){
-          this.argv = argv;
+          
           console.log(this);
 
       }else{
 
         if(argv.method){
           
-          console.log(colors.red.underline('\n Method `'+argv.method+'` does not exist.\n'));
-  	      console.log(colors.green("Choose method parameter '-method {method}' from options below:"));
+          throw Error("\n Method '"+argv.method+"' does not exist.\n");
+  	      throw Error("Choose method parameter '-method {method}' from options below:");
 
         }
 
