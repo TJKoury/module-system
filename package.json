@@ -32,7 +32,15 @@
     "should": "^8.1.1"
   },
   "union_station_module_system":{
-    "defaults":{}
+    "defaults":{
+      "nodeModulesPath":"node_modules",
+      "prefix": "union-station",
+      "name":"union-station-module",
+      "description":"union-station-module",
+      "version":"0.0.0",
+      "author":"union-station-module-system",
+      "license":"ISC"
+    }
   }
 
 }
