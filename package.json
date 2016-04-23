@@ -1,5 +1,5 @@
 {
-  "name": "module-system",
+  "name": "union-station-module-system",
   "version": "1.0.0",
   "description": "Module generator for projects",
   "main": "index.js",
