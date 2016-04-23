@@ -1,10 +1,10 @@
 var fs = require('fs');
 var path = require('path');
-var moduleCreator = require('../index.js');
+var moduleCreator = require('../index.js')();
 
 describe('Module Creator', function(){
     
-    var resultPath = moduleCreator({method:'generate'});
+    var resultPath = moduleCreator.generate({nodeModulesPath:'test'});
     var testFiles = [
         path.join(resultPath, "package.json"),
         path.join(resultPath, "index.js")
@@ -20,9 +20,9 @@ describe('Module Creator', function(){
             (fs.existsSync(file)).should.be.true;
                 
         });
-
-        done();        
-        
+        this.timeout(10000);
+        setTimeout(done, 5000);
+  
     });
 
     after(function(done){

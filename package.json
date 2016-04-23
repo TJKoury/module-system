@@ -4,11 +4,11 @@
   "description": "Module generator for projects",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "node node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TJKoury/module-system.git"
+    "url": "git+https://github.com/TJKoury/union-station-module-system.git"
   },
   "keywords": [
     "module",
@@ -19,9 +19,9 @@
   "author": "TJKoury",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/TJKoury/module-system/issues"
+    "url": "https://github.com/TJKoury/union-station-module-system/issues"
   },
-  "homepage": "https://github.com/TJKoury/module-system#readme",
+  "homepage": "https://github.com/TJKoury/union-station-module-system#readme",
   "dependencies": {
     "colors": "^1.1.2",
     "lodash": "^4.0.0",
