@@ -180,8 +180,12 @@ module.generate = function(argv){
   var module_uuid = uuid.v4();
   
   argv.packageJSON.id = module_uuid;
-  
-  argv.packageJSON.name = ([argv.prefix,"--",argv.name,"--",module_uuid].join("")).replace(" ", "-");
+  var _filename = [argv.prefix,argv.name,module_uuid];
+  var _delimiter = "_";
+  for(var _f=0;_f<_filename.length;_f++){
+    _filename[_f] = _filename[_f].replace(_delimiter, "").replace(" ", "-");
+  }
+  argv.packageJSON.name = _filename.join(_delimiter);
   
   if (!fs.existsSync(argv.nodeModulesPath)) {
     fs.mkdirSync(argv.nodeModulesPath);
