@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var settings = require('./package.json');
 
 var uuid = require('uuid');
