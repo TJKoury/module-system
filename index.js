@@ -136,7 +136,7 @@ module.exports = function (argv) {
 
         if(argv.method){
           
-          throw Error("\n Method '"+argv.method+"' does not exist.\nChoose method parameter '-method {method}' from options below:"");
+          throw Error("\n Method '"+argv.method+"' does not exist.\nChoose method parameter '-method {method}' from options below:");
 
         }
 
