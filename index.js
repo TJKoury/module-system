@@ -57,7 +57,7 @@ defaults.nodeModulesPath = "node_modules";
  * @type{string}
  *
  * */
-defaults.prefix = "union-station";
+defaults.prefix = "union_station";
 
 /**
  * @type{string}
@@ -114,7 +114,7 @@ defaults.packageJSON = {
  *
  * @returns {object}
  **/
-module.exports = function (argv) {
+module.exports = function union_station_module(argv) {
   
   this.argv = argv;
 
@@ -148,10 +148,6 @@ module.exports = function (argv) {
       throw Error('missing arguments object');
     }
 
-  }else{
-
-    return module;
-
   }
 
 }
@@ -184,7 +180,7 @@ module.generate = function(argv){
   var _filename = [argv.prefix,argv.name,module_uuid];
   var _delimiter = "_";
   for(var _f=0;_f<_filename.length;_f++){
-    _filename[_f] = _filename[_f].replace(_delimiter, "").replace(" ", "-");
+    _filename[_f] = _filename[_f].replace(_delimiter, "").replace(" ", "");
   }
   argv.packageJSON.name = _filename.join(_delimiter);
   
@@ -201,7 +197,9 @@ module.generate = function(argv){
     var indexJS = "#!/usr/bin/env node\n\n"+
       fs.readFileSync(module.filename, {encoding: 'utf8'})
       .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
-      .join("").replace(/\/\*REQUIRED_((START)|(END))\*\//g, "");
+      .join("")
+      .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
+      .replace("union_station_module(argv)", _filename+"(argv");
 
     fs.mkdirSync(modulePath);
 
@@ -236,7 +234,6 @@ module.generate = function(argv){
 
     throw Error(error);
 
-    return false;
   }
 }
 
