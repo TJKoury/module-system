@@ -116,7 +116,7 @@ defaults.packageJSON = {
  * @returns {object}
  **/
 
-module.getInstance = ()=>module;
+module.getModule = ()=>module;
 
 /**
  * Main export from this module.
