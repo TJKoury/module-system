@@ -1,0 +1,12 @@
+{
+    "name": "union_stationᅟempty_moduleᅟb28737e4_209c_46c4_ba5e_8991045a3937",
+    "version": "0.0.0",
+    "description": "empty-module",
+    "main": "index.js",
+    "scripts": {
+        "test": "test"
+    },
+    "author": "union-station-module-system",
+    "license": "ISC",
+    "id": "b28737e4-209c-46c4-ba5e-8991045a3937"
+}

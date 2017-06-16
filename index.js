@@ -110,20 +110,11 @@ defaults.packageJSON = {
 
 
 /**
- * Returns module.
- * @method getInstance
- *
- * @returns {object}
- **/
-
-module.getModule = ()=>module;
-
-/**
  * Main export from this module.
  * @method exports
  *
  * @param    {object}    argv Input arguments (from cmdline -key value)
- * @property {string}    argv.method Method to call with arguments
+ * @property {{('getModule'|'genDoc'|'generate')}}    argv.method Method to call with arguments
  *
  * @returns {object}
  **/
@@ -136,16 +127,10 @@ module.exports = function union_station_module(argv) {
 
     if(argv){
 
-      if(argv.method
-         && argv.method in module
-         && argv.method!=='exports'){
-
-           return module[argv.method](argv);
-
-      }else if(argv.method === 'exports'){
-          
-          console.log(this);
-
+      if(argv.method&& argv.method in module){
+        
+        return module[argv.method](argv);
+      
       }else{
 
         if(argv.method){
@@ -162,10 +147,20 @@ module.exports = function union_station_module(argv) {
       throw Error('missing arguments object');
     }
   }else{
-    this.getInstance = module.getInstance;
+    for(var _method in module){
+      this[_method] = module[_method];
+    }
   }
 };
 
+/**
+ * Returns module.
+ * @method getModule
+ *
+ * @returns {object}
+ **/
+
+module.getModule = ()=>module;
 
 /*REQUIRED_END*/
 
@@ -196,7 +191,7 @@ module.generate = function(argv){
   
   argv.packageJSON.id = module_uuid;
   var _filename = [argv.prefix,argv.name,module_uuid];
-  var _delimiter = "\u00B7";
+  var _delimiter = "\u115F";
   for(var _f=0;_f<_filename.length;_f++){
     _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "").replace(/\-/g, "_");
   }
@@ -217,7 +212,8 @@ module.generate = function(argv){
       .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
       .join("")
       .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
-      .replace("union_station_module(argv)", _filename.join(_delimiter)+"(argv)");
+      .replace("union_station_module(argv)", _filename.join(_delimiter)+"(argv)")
+      .replace(/\|'generate'.*\)}}/g, ")}}");
 
     fs.mkdirSync(modulePath);
 
