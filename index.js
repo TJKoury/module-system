@@ -114,7 +114,7 @@ defaults.packageJSON = {
  * @method exports
  *
  * @param    {object}    argv Input arguments (from cmdline -key value)
- * @property {{('getModule'|'genDoc'|'generate')}}    argv.method Method to call with arguments
+ * @property {string}    argv.method Method to call with arguments
  *
  * @returns {object}
  **/
@@ -161,6 +161,11 @@ module.exports = function union_station_module(argv) {
  **/
 
 module.getModule = ()=>module;
+
+
+/*NEW CODE HERE*/
+
+/*END NEW CODE*/
 
 /*REQUIRED_END*/
 
@@ -253,10 +258,6 @@ module.generate = function(argv){
 
 
 /*REQUIRED_START*/
-
-/*NEW CODE HERE*/
-
-/*END NEW CODE*/
 
 /*
   TODO:
