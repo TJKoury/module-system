@@ -31,6 +31,9 @@
     "mocha": "^2.3.4",
     "should": "^8.1.1"
   },
+  "bin": {
+    "union-station-module-system": "./index.js"
+  },
   "union_station_module_system":{
     "defaults":{
       "nodeModulesPath":"node_modules",
