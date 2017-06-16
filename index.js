@@ -104,7 +104,20 @@ defaults.packageJSON = {
   "author": defaults.author,
   "license": defaults.license
 };
+
+
 /*REQUIRED_START*/
+
+
+/**
+ * Returns module.
+ * @method getInstance
+ *
+ * @returns {object}
+ **/
+
+module.getInstance = ()=>module;
+
 /**
  * Main export from this module.
  * @method exports
@@ -114,6 +127,7 @@ defaults.packageJSON = {
  *
  * @returns {object}
  **/
+
 module.exports = function union_station_module(argv) {
   
   this.argv = argv;
@@ -147,11 +161,15 @@ module.exports = function union_station_module(argv) {
 
       throw Error('missing arguments object');
     }
-
+  }else{
+    this.getInstance = module.getInstance;
   }
+};
 
-}
+
 /*REQUIRED_END*/
+
+
 /**
  * Creates New Module.
  * @method generate
@@ -178,9 +196,9 @@ module.generate = function(argv){
   
   argv.packageJSON.id = module_uuid;
   var _filename = [argv.prefix,argv.name,module_uuid];
-  var _delimiter = "ᅟ";
+  var _delimiter = "\u00B7";
   for(var _f=0;_f<_filename.length;_f++){
-    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "").replace(/\-/g, "ᅟ");
+    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "").replace(/\-/g, "_");
   }
   argv.packageJSON.name = _filename.join(_delimiter);
   

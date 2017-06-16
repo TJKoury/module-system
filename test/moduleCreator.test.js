@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
-var moduleCreator = require('../index.js')();
+var mC = require('../index.js');
+const moduleCreator = (new mC()).getInstance();
 
 describe('Module Creator', function(){
     
@@ -18,6 +19,7 @@ describe('Module Creator', function(){
         
         testFiles.forEach(function(file){
             (fs.existsSync(file)).should.be.true;
+            console.log(file);
                 
         });
         this.timeout(10000);
