@@ -178,9 +178,9 @@ module.generate = function(argv){
   
   argv.packageJSON.id = module_uuid;
   var _filename = [argv.prefix,argv.name,module_uuid];
-  var _delimiter = "_";
+  var _delimiter = "ᅟ";
   for(var _f=0;_f<_filename.length;_f++){
-    _filename[_f] = _filename[_f].replace(_delimiter, "").replace(" ", "");
+    _filename[_f] = _filename[_f].replace(_delimiter, "").replace(" ", "").replace("-", "ᅟ");
   }
   argv.packageJSON.name = _filename.join(_delimiter);
   
