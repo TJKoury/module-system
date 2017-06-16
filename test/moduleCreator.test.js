@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var mC = require('../index.js');
-const moduleCreator = (new mC()).getModule();
+const moduleCreator = (new mC());
 
 describe('Module Creator', function(){
     
