@@ -199,7 +199,7 @@ module.generate = function(argv){
       .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
       .join("")
       .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
-      .replace("union_station_module(argv)", _filename+"(argv");
+      .replace("union_station_module(argv)", _filename.join(_delimiter)+"(argv)");
 
     fs.mkdirSync(modulePath);
 
