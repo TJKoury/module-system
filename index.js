@@ -180,7 +180,7 @@ module.generate = function(argv){
   var _filename = [argv.prefix,argv.name,module_uuid];
   var _delimiter = "ᅟ";
   for(var _f=0;_f<_filename.length;_f++){
-    _filename[_f] = _filename[_f].replace(_delimiter, "").replace(" ", "").replace("-", "ᅟ");
+    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "").replace(/\-/g, "ᅟ");
   }
   argv.packageJSON.name = _filename.join(_delimiter);
   
