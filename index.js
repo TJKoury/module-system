@@ -190,10 +190,10 @@ module.generate = function(argv){
   var module_uuid = uuid.v4();
   
   argv.packageJSON.id = module_uuid;
-  var _filename = [argv.prefix,argv.name,module_uuid];
+  var _filename = [argv.prefix,argv.name,module_uuid.replace(/\-/g, "")];
   var _delimiter = "\u115F";
   for(var _f=0;_f<_filename.length;_f++){
-    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "").replace(/\-/g, "_");
+    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "");
   }
   argv.packageJSON.name = _filename.join(_delimiter);
   
