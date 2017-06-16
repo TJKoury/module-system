@@ -15,6 +15,8 @@ var fs = require('fs');
 /**
  * JSDoc3 compliant tag-parser method.
  * @function genDoc
+ *
+ * @returns {string}
  **/
 
 module.genDoc = function () {
