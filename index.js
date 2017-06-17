@@ -10,35 +10,10 @@ var colors = require('colors');
 
 var commands = process.argv;
 /*REQUIRED_START*/
-var fs = require('fs');
+/*NEW CODE HERE*/
 
-/**
- * JSDoc3 compliant tag-parser method.
- * @function genDoc
- *
- * @returns {string}
- **/
-
-module.genDoc = function () {
-
-  var this_file = fs.readFileSync(module.filename, {encoding: 'utf8'});
-  var docs = this_file.match(/(\/\*\*([\s\S]*?)\*\/)$/gm);
-  var docsFinal = ["\n","\n"];
-  for(var doc= 0;doc<docs.length;doc++){
-
-    if(!docs[doc].match(/\@type/g)) {
-      docsFinal.push(docs[doc]);
-
-      if (docs[doc].match(/\*\*\//g)) {
-        docsFinal.push("\n");
-      }
-
-    }
-  }
-  console.log(docsFinal.join("\n"));
-
-};
-
+/*END NEW CODE*/
+/*REQUIRED_END*/
 /**
  * @type{object}
  *
@@ -46,7 +21,6 @@ module.genDoc = function () {
 
 var defaults = {}||settings.union_station_module_system.defaults;
 
-/*REQUIRED_END*/
 /**
  * @type{string}
  *
@@ -63,13 +37,13 @@ defaults.prefix = "union_station";
  * @type{string}
  *
  * */
-defaults.description = "empty-module";
+defaults.description = "empty_module";
 
 /**
  * @type{string}
  *
  * */
-defaults.name = "empty-module";
+defaults.name = "empty_module";
 
 /**
  * @type{string}
@@ -81,7 +55,7 @@ defaults.version = "0.0.0";
  * @type{string}
  *
  * */
-defaults.author = "union-station-module-system";
+defaults.author = "union_station_module_system";
 
 /**
  * @type{string}
@@ -93,6 +67,7 @@ defaults.license = "ISC";
  * @type{object}
  *
  **/
+
 defaults.packageJSON = {
   "name": defaults.name,
   "version": defaults.version,
@@ -105,10 +80,7 @@ defaults.packageJSON = {
   "license": defaults.license
 };
 
-
 /*REQUIRED_START*/
-
-
 /**
  * Main export from this module.
  * @method exports
@@ -162,13 +134,33 @@ module.exports = function union_station_module(argv) {
 
 module.getModule = ()=>module;
 
+/**
+ * JSDoc3 compliant tag-parser method.
+ * @function genDoc
+ *
+ * @returns {string}
+ **/
 
-/*NEW CODE HERE*/
+module.genDoc = function () {
 
-/*END NEW CODE*/
+  var this_file = require('fs').readFileSync(module.filename, {encoding: 'utf8'});
+  var docs = this_file.match(/(\/\*\*([\s\S]*?)\*\/)$/gm);
+  var docsFinal = ["\n","\n"];
+  for(var doc= 0;doc<docs.length;doc++){
 
+    if(!docs[doc].match(/\@type/g)) {
+      docsFinal.push(docs[doc]);
+
+      if (docs[doc].match(/\*\*\//g)) {
+        docsFinal.push("\n");
+      }
+
+    }
+  }
+  console.log(docsFinal.join("\n"));
+};
 /*REQUIRED_END*/
-
+var fs = require('fs');
 
 /**
  * Creates New Module.
@@ -195,10 +187,10 @@ module.generate = function(argv){
   var module_uuid = uuid.v4();
   
   argv.packageJSON.id = module_uuid;
-  var _filename = [argv.prefix,argv.name,module_uuid.replace(/\-/g, "")];
-  var _delimiter = "\u115F";
+  var _filename = [argv.prefix,argv.name,module_uuid];
+  var _delimiter = "\u115F";//"_";
   for(var _f=0;_f<_filename.length;_f++){
-    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "");
+    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "").replace(/\-/g, "");
   }
   argv.packageJSON.name = _filename.join(_delimiter);
   
