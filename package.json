@@ -29,21 +29,21 @@
   },
   "devDependencies": {
     "mocha": "^2.3.4",
-    "should": "^8.1.1"
+    "should": "^8.1.1",
+    "webpack": "^2.6.1"
   },
   "bin": {
     "union-station-module-system": "./index.js"
   },
-  "union_station_module_system":{
-    "defaults":{
-      "nodeModulesPath":"node_modules",
+  "union_station_module_system": {
+    "defaults": {
+      "nodeModulesPath": "node_modules",
       "prefix": "union-station",
-      "name":"empty-module",
-      "description":"empty-module",
-      "version":"0.0.0",
-      "author":"union-station-module-system",
-      "license":"ISC"
+      "name": "empty-module",
+      "description": "empty-module",
+      "version": "0.0.0",
+      "author": "union-station-module-system",
+      "license": "ISC"
     }
   }
-
 }

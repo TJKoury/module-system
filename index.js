@@ -126,6 +126,15 @@ module.exports = function union_station_module(argv) {
 };
 
 /**
+ * Unique Identifier.
+ * @property id
+ *
+ * @returns {id}
+ **/
+
+module.id = /*ID*/'0';
+
+/**
  * Returns module.
  * @method getModule
  *
@@ -184,13 +193,13 @@ module.generate = function(argv){
   _.assign(argv.packageJSON, _.pick(defaults, _.keys(argv.packageJSON)));
 
   // Time-based UUID generated for module
-  var module_uuid = uuid.v4();
+  var module_uuid = uuid.v4().replace(/\-/g, "");
   
   argv.packageJSON.id = module_uuid;
-  var _filename = [argv.prefix,argv.name,module_uuid];
-  var _delimiter = "\u115F";//"_";
+  var _filename = [argv.prefix,argv.name];
+  var _delimiter = "__";
   for(var _f=0;_f<_filename.length;_f++){
-    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "").replace(/\-/g, "");
+    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "");
   }
   argv.packageJSON.name = _filename.join(_delimiter);
   
@@ -209,8 +218,9 @@ module.generate = function(argv){
       .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
       .join("")
       .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
-      .replace("union_station_module(argv)", _filename.join(_delimiter)+"(argv)")
-      .replace(/\|'generate'.*\)}}/g, ")}}");
+      .replace("union_station_module(argv)", _filename.join(_delimiter)+"\u115F"+module_uuid+"(argv)")
+      .replace(/\|'generate'.*\)}}/g, ")}}")
+      .replace(/\/\*ID\*\/'0'/g, "'"+module_uuid+"'");
 
     fs.mkdirSync(modulePath);
 
