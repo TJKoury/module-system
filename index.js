@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 
-var settings = require('./package.json');
-
-var uuid = require('uuid');
-
-var path = require('path');
-var _ = require('lodash');
-var colors = require('colors');
-
-var commands = process.argv;
+const settings = require('./package.json');
+const uuid = require('uuid');
+const path = require('path');
+const _ = require('lodash');
+const colors = require('colors');
+const commands = process.argv;
 /*REQUIRED_START*/
+const { Transform } = require('stream');
 /*NEW CODE HERE*/
 
 /*END NEW CODE*/
@@ -19,7 +17,7 @@ var commands = process.argv;
  *
  * */
 
-var defaults = {}||settings.union_station_module_system.defaults;
+const defaults = {} || settings.union_station_module_system.defaults;
 
 /**
  * @type{string}
@@ -83,44 +81,51 @@ defaults.packageJSON = {
 /*REQUIRED_START*/
 /**
  * Main export from this module.
+ * It is required to pass the --method flag with argument
+ * The way to call from the command line:
+ * 
+ * ./index.js  --method {method} --key1 {val1} --key2 {val2} ...
+ * 
  * @method exports
  *
- * @param    {object}    argv Input arguments (from cmdline -key value)
- * @property {string}    argv.method Method to call with arguments
+ * @param    {object}    argv - Input arguments (from cmdline -key value)
+ * @property {string}    argv.method - Method to call with arguments
  *
  * @returns {object}
  **/
 
-module.exports = function union_station_module(argv) {
-  
-  this.argv = argv;
+module.exports = class union_station_module extends Transform {
+  constructor(argv) {
+    super(argv);
+    this.argv = argv;
+    
+    if (require.main === module) {
 
-  if(require.main === module){
+      if (argv) {
 
-    if(argv){
+        if (argv.method && argv.method in module) {
 
-      if(argv.method&& argv.method in module){
-        
-        return module[argv.method](argv);
-      
-      }else{
+          return module[argv.method](argv);
 
-        if(argv.method){
-          
-          throw Error("\n Method '"+argv.method+"' does not exist.\nChoose method parameter '-method {method}' from options below:");
+        } else {
+
+          if (argv.method) {
+
+            throw Error("\n Method '" + argv.method + "' does not exist.\nChoose method parameter '-method {method}' from options below:");
+
+          }
+
+          module.genDoc();
 
         }
+      } else {
 
-        module.genDoc();
-
+        throw Error('missing arguments object');
       }
-    }else{
-
-      throw Error('missing arguments object');
-    }
-  }else{
-    for(var _method in module){
-      this[_method] = module[_method];
+    } else {
+      for (var _method in module) {
+        this[_method] = module[_method];
+      }
     }
   }
 };
@@ -141,7 +146,7 @@ module.id = /*ID*/'0';
  * @returns {object}
  **/
 
-module.getModule = ()=>module;
+module.getModule = () => module;
 
 /**
  * JSDoc3 compliant tag-parser method.
@@ -152,12 +157,12 @@ module.getModule = ()=>module;
 
 module.genDoc = function () {
 
-  var this_file = require('fs').readFileSync(module.filename, {encoding: 'utf8'});
+  var this_file = require('fs').readFileSync(module.filename, { encoding: 'utf8' });
   var docs = this_file.match(/(\/\*\*([\s\S]*?)\*\/)$/gm);
-  var docsFinal = ["\n","\n"];
-  for(var doc= 0;doc<docs.length;doc++){
+  var docsFinal = ["\n", "\n"];
+  for (var doc = 0; doc < docs.length; doc++) {
 
-    if(!docs[doc].match(/\@type/g)) {
+    if (!docs[doc].match(/\@type/g)) {
       docsFinal.push(docs[doc]);
 
       if (docs[doc].match(/\*\*\//g)) {
@@ -175,10 +180,10 @@ var fs = require('fs');
  * Creates New Module.
  * @method generate
  *
- * @param    {object}    argv Input options (from cmdline -key value)
- * @property {string}    argv.prefix Prefix for module
+ * @param    {object}    argv - Input options (from cmdline -key value)
+ * @property {string}    argv.prefix - Prefix for module
  * @property {string}    argv.description
- * @property {string}    argv.nodeModulesPath Path to put module
+ * @property {string}    argv.nodeModulesPath - Path to put module
  * @property {string}    argv.name
  * @property {string}    argv.version
  * @property {string}    argv.author
@@ -186,7 +191,7 @@ var fs = require('fs');
  *
  * @returns {string}
  **/
-module.generate = function(argv){
+module.generate = function (argv) {
 
   // Extends arguments with defaults
   argv = _.extend(defaults, argv);
@@ -194,15 +199,15 @@ module.generate = function(argv){
 
   // Time-based UUID generated for module
   var module_uuid = uuid.v4().replace(/\-/g, "");
-  
+
   argv.packageJSON.id = module_uuid;
-  var _filename = [argv.prefix,argv.name];
+  var _filename = [argv.prefix, argv.name];
   var _delimiter = "__";
-  for(var _f=0;_f<_filename.length;_f++){
+  for (var _f = 0; _f < _filename.length; _f++) {
     _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "");
   }
   argv.packageJSON.name = _filename.join(_delimiter);
-  
+
   if (!fs.existsSync(argv.nodeModulesPath)) {
     fs.mkdirSync(argv.nodeModulesPath);
   }
@@ -213,22 +218,22 @@ module.generate = function(argv){
   if (!fs.existsSync(modulePath)) {
 
     // JS code to put in new module
-    var indexJS = "#!/usr/bin/env node\n\n"+
-      fs.readFileSync(module.filename, {encoding: 'utf8'})
-      .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
-      .join("")
-      .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
-      .replace("union_station_module(argv)", _filename.join(_delimiter)+"\u115F"+module_uuid+"(argv)")
-      .replace(/\|'generate'.*\)}}/g, ")}}")
-      .replace(/\/\*ID\*\/'0'/g, "'"+module_uuid+"'");
+    var indexJS = "#!/usr/bin/env node\n\n" +
+      fs.readFileSync(module.filename, { encoding: 'utf8' })
+        .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
+        .join("")
+        .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
+        .replace("union_station_module", _filename.join(_delimiter) + "\u115F" + module_uuid)
+        .replace(/\|'generate'.*\)}}/g, ")}}")
+        .replace(/\/\*ID\*\/'0'/g, "'" + module_uuid + "'");
 
     fs.mkdirSync(modulePath);
 
     fs.writeFileSync(
       path.join(modulePath, "package.json"),
       JSON.stringify(argv.packageJSON,
-      null,
-      4)
+        null,
+        4)
     );
 
     fs.writeFileSync(
@@ -240,7 +245,7 @@ module.generate = function(argv){
 
     argv.path = path.join(argv.nodeModulesPath, argv.packageJSON.name);
 
-    if(require.main == module){
+    if (require.main == module) {
       console.log(argv.path);
     }
     return argv.path;
@@ -278,14 +283,14 @@ if (require.main == module) {
     var _arguments = {};
     for (var i = 2; i < process.argv.length; i++) {
       if (i % 2 == 0) {
-        if(process.argv[i].indexOf("-")==0 || process.argv[i].indexOf("node")>-1) {
+        if (process.argv[i].indexOf("-") == 0 || process.argv[i].indexOf("node") > -1) {
           _arguments[process.argv[i].substr(1)] = process.argv[i + 1];
-        }else{
+        } else {
           throw Error("Option misconfigured: " + process.argv[i]);
         }
       }
     }
-    module.exports(_arguments);
+    new module.exports(_arguments);
   }
 
 }

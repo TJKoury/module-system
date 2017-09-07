@@ -10,7 +10,7 @@ describe('Module Creator', function () {
         path.join(resultPath, "package.json"),
         path.join(resultPath, "index.js")
     ];
-    
+
     var cleanup = function (done) {
         console.log('Deleting ' + resultPath + '\n');
         testFiles.forEach(function (file) {
@@ -29,9 +29,11 @@ describe('Module Creator', function () {
         console.log('Created: ' + resultPath + '\n');
         resultPath.should.not.be.false;
         (fs.existsSync(resultPath)).should.be.true;
+        var test = this;
         testFiles.forEach(function (file, i) {
             (fs.existsSync(file)).should.be.true;
             console.log(file);
+            console.log(fs.readFileSync(file).toString('utf8'));
             if (i) {
                 fs.chmodSync(file, "777")
                 console.log(exec(file).toString('utf8'));
