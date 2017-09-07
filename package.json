@@ -4,7 +4,8 @@
   "description": "Module generator for projects",
   "main": "index.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha"
+    "test": "node node_modules/mocha/bin/mocha",
+    "dev": "nodemon --exec npm run test --ignore test/**/*"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "mocha": "^2.3.4",
+    "nodemon": "^1.12.0",
     "should": "^8.1.1",
     "webpack": "^2.6.1"
   },
