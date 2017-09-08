@@ -164,12 +164,24 @@ module.getModule = () => module;
  * Transform method
  * @function _transform
  *
- * @returns {stream}
+ * @returns {null}
  **/
 
 module.exports.prototype._transform = function (data, encoding, cb) {
   let error = null;
   cb(error, data);
+};
+
+/**
+ * Flush method
+ * @function _flush
+ *
+ * @returns {null}
+ **/
+
+module.exports.prototype._flush = function (cb) {
+  this.push();
+  cb();
 };
 
 /**
