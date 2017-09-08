@@ -8,6 +8,7 @@ const colors = require('colors');
 const commands = process.argv;
 /*REQUIRED_START*/
 const { Transform } = require('stream');
+const tty = require('tty');
 /*NEW CODE HERE*/
 
 /*END NEW CODE*/
@@ -81,6 +82,9 @@ defaults.packageJSON = {
 /*REQUIRED_START*/
 /**
  * Main export from this module.
+ * It returns a class with a constructor that inherits
+ * from stream.Transform.
+ * (https://nodejs.org/api/stream.html#stream_class_stream_transform).
  * It is required to pass the --method flag with argument
  * The way to call from the command line:
  * 
@@ -96,9 +100,11 @@ defaults.packageJSON = {
 
 module.exports = class union_station_module extends Transform {
   constructor(argv) {
+
     super(argv);
+
     this.argv = argv;
-    
+
     if (require.main === module) {
 
       if (argv) {
@@ -115,7 +121,12 @@ module.exports = class union_station_module extends Transform {
 
           }
 
+          if(!process.stdin.isTTY){
+            process.stdin.pipe(this).pipe(process.stdout);
+          }else{
+
           module.genDoc();
+          }
 
         }
       } else {
@@ -147,6 +158,18 @@ module.id = /*ID*/'0';
  **/
 
 module.getModule = () => module;
+
+/**
+ * Transform method
+ * @function _transform
+ *
+ * @returns {stream}
+ **/
+
+module.exports.prototype._transform = function (data, encoding, cb) {
+  let error = null;
+  cb(error, data);
+};
 
 /**
  * JSDoc3 compliant tag-parser method.
@@ -290,7 +313,10 @@ if (require.main == module) {
         }
       }
     }
+    //Check for stdin and stdout
+
     new module.exports(_arguments);
+
   }
 
 }
