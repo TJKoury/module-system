@@ -85,8 +85,9 @@ defaults.packageJSON = {
  * It returns a class with a constructor that inherits
  * from stream.Transform.
  * (https://nodejs.org/api/stream.html#stream_class_stream_transform).
- * It is required to pass the --method flag with argument
- * The way to call from the command line:
+ * 
+ * Methods other than piping through _transform can be called by
+ * passing the --method flag with arguments, ex:
  * 
  * ./index.js  --method {method} --key1 {val1} --key2 {val2} ...
  * 
