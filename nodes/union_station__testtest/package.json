@@ -1,0 +1,12 @@
+{
+    "name": "union_station__testtest",
+    "version": "0.0.0",
+    "description": "empty_module",
+    "main": "index.js",
+    "scripts": {
+        "test": "test"
+    },
+    "author": "tj",
+    "license": "ISC",
+    "id": "270a6492daa34990bdfef8db5e12cd29"
+}

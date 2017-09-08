@@ -1,64 +1,77 @@
 var fs = require('fs');
 var path = require('path');
 var mC = require('../index.js');
-const {execFileSync, execSync} = require('child_process');
+const { execFileSync, execSync } = require('child_process');
 const moduleCreator = (new mC());
+const moduleOptions = {
+    nodeModulesPath: 'test',
+    name: 'test_module'
+};
+
+const moduleFolderName = "union_station__" + moduleOptions.name;
 
 describe('Module Creator', function () {
-    var resultPath = moduleCreator.generate({ nodeModulesPath: 'test' });
+    let fullPath = path.join(moduleOptions.nodeModulesPath, moduleFolderName);
+    console.log(fullPath)
     var testFiles = [
-        path.join(resultPath, "package.json"),
-        path.join(resultPath, "index.js")
+        path.join(fullPath, "package.json"),
+        path.join(fullPath, "index.js")
     ];
 
     var cleanup = function (done) {
-        console.log('Deleting ' + resultPath + '\n');
+        console.log('Deleting ' + fullPath + '\n');
         testFiles.forEach(function (file) {
             try {
                 fs.unlinkSync(file);
             } catch (e) { }
         });
         try {
-            fs.rmdirSync(resultPath);
+            fs.rmdirSync(fullPath);
         } catch (e) { }
         done();
     };
-
+    cleanup(function(){})
     it('should create valid module in a new folder', function (done) {
         before(cleanup);
+        var resultPath = moduleCreator.generate(moduleOptions);
         console.log('Created: ' + resultPath + '\n');
         resultPath.should.not.be.false;
+
         (fs.existsSync(resultPath)).should.be.true;
         var test = this;
         testFiles.forEach(function (file, i) {
             (fs.existsSync(file)).should.be.true;
-            //console.log(file);
-            //console.log(fs.readFileSync(file).toString('utf8'));
             if (i) {
-                fs.chmodSync(file, "777");
-                (execFileSync(file).toString('utf8')).should.not.be.null;
-                let pipeResult = execSync("echo 'pass this test'|node "+file+"|cat");
-                pipeResult.toString('utf8').should.equal('pass this test\n');
+                let _file = path.resolve(file);
+                fs.chmodSync(_file, "777");
 
-                const testModuleClass = new require("./"+file.replace("test/", ""));
+               (execSync("node "+_file).toString('utf8')).should.not.be.null;
+           
+                let pipeResult = execSync("echo pass this test|node " + _file + "|cat");
+                console.log(pipeResult.toString('utf8'), 'asdf')
+                pipeResult.toString('utf8').indexOf('pass this test').should.equal(0);
+
+                const testModuleClass = require(_file);
                 let testModule = new testModuleClass();
                 var Readable = require('stream').Readable;
                 var s = new Readable();
-                s._read = ()=> {}; 
+                s._read = () => { };
                 s.push('test');
                 s.push(null);
                 var _a = '';
-                s.pipe(testModule.on('data', (d)=>{
-                    _a+=d; 
-                }).on('end', ()=>{
+                s.pipe(testModule.on('data', (d) => {
+                    _a += d;
+                }).on('end', () => {
                     _a.should.equal('test');
                     setTimeout(done, 1000);
                 })).pipe(process.stdout);
-
+          
             }
         });
+
+        after(cleanup);
         this.timeout(10000);
-       
+        
     });
-    after(cleanup);
+   
 });
