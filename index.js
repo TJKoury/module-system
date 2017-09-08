@@ -250,7 +250,7 @@ module.generate = function (argv) {
 
   // Path to put the module
   var modulePath = path.join(argv.nodeModulesPath, argv.packageJSON.name);
-  console.log('asdf', modulePath, fs.existsSync(modulePath))
+  
   if (!fs.existsSync(modulePath)) {
 
     // JS code to put in new module

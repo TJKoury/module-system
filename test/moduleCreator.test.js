@@ -7,7 +7,7 @@ const moduleOptions = {
     nodeModulesPath: 'test',
     name: 'test_module'
 };
-
+let resultPath;
 const moduleFolderName = "union_station__" + moduleOptions.name;
 
 describe('Module Creator', function () {
@@ -30,13 +30,16 @@ describe('Module Creator', function () {
         } catch (e) { }
         done();
     };
-    cleanup(function(){})
+    cleanup(function () { })
     it('should create valid module in a new folder', function (done) {
         before(cleanup);
-        var resultPath = moduleCreator.generate(moduleOptions);
+        resultPath = moduleCreator.generate(moduleOptions);
         console.log('Created: ' + resultPath + '\n');
         resultPath.should.not.be.false;
+        done();
+    });
 
+    it('should pipe data correctly', function (done) {
         (fs.existsSync(resultPath)).should.be.true;
         var test = this;
         testFiles.forEach(function (file, i) {
@@ -45,10 +48,9 @@ describe('Module Creator', function () {
                 let _file = path.resolve(file);
                 fs.chmodSync(_file, "777");
 
-               (execSync("node "+_file).toString('utf8')).should.not.be.null;
-           
+                (execSync("node " + _file).toString('utf8')).should.not.be.null;
+
                 let pipeResult = execSync("echo pass this test|node " + _file + "|cat");
-                console.log(pipeResult.toString('utf8'), 'asdf')
                 pipeResult.toString('utf8').indexOf('pass this test').should.equal(0);
 
                 const testModuleClass = require(_file);
@@ -56,22 +58,21 @@ describe('Module Creator', function () {
                 var Readable = require('stream').Readable;
                 var s = new Readable();
                 s._read = () => { };
-                s.push('test');
+                s.push('pipe test');
                 s.push(null);
                 var _a = '';
                 s.pipe(testModule.on('data', (d) => {
                     _a += d;
                 }).on('end', () => {
-                    _a.should.equal('test');
+                    _a.should.equal('pipe test');
                     setTimeout(done, 1000);
                 })).pipe(process.stdout);
-          
+
             }
         });
 
         after(cleanup);
         this.timeout(10000);
-        
     });
-   
+
 });
