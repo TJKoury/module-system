@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha",
-    "dev": "nodemon --exec npm run test --ignore test/**/*"
+    "dev": "nodemon --ignore './test/' --exec 'node node_modules/mocha/bin/mocha'"
   },
   "repository": {
     "type": "git",
