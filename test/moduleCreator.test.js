@@ -70,9 +70,26 @@ describe('Module Creator', function () {
 
             }
         });
+        this.timeout(10000);
+    });
+    it('should execute command line arguments correctly', function (done) {
+        (fs.existsSync(resultPath)).should.be.true;
+        var test = this;
+        testFiles.forEach(function (file, i) {
+            (fs.existsSync(file)).should.be.true;
+            if (i) {
+                let _file = path.resolve(file);
+                fs.chmodSync(_file, "777");
 
-        after(cleanup);
+                (execSync("node " + _file + " --method genDoc").toString('utf8')).should.not.be.null;
+
+                done();
+
+            }
+        });
+
         this.timeout(10000);
     });
 
+    after(cleanup);
 });

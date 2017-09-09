@@ -319,8 +319,8 @@ if (require.main == module) {
     var _arguments = {};
     for (var i = 2; i < process.argv.length; i++) {
       if (i % 2 == 0) {
-        if (process.argv[i].indexOf("-") == 0 || process.argv[i].indexOf("node") > -1) {
-          _arguments[process.argv[i].substr(1)] = process.argv[i + 1];
+        if (process.argv[i].indexOf("-") == 0) {
+          _arguments[process.argv[i].replace(/^-{1,2}/g, '')] = process.argv[i + 1];
         } else {
           throw Error("Option misconfigured: " + process.argv[i]);
         }
