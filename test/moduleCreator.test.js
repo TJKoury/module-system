@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs');
 var path = require('path');
 var mC = require('../index.js');
@@ -30,7 +32,7 @@ describe('Module Creator', function () {
         } catch (e) { }
         done();
     };
-    cleanup(function () { })
+    cleanup(function () {})
     it('should create valid module in a new folder', function (done) {
         before(cleanup);
         resultPath = moduleCreator.generate(moduleOptions);
@@ -46,10 +48,9 @@ describe('Module Creator', function () {
             (fs.existsSync(file)).should.be.true;
             if (i) {
                 let _file = path.resolve(file);
-                fs.chmodSync(_file, "777");
-
-                (execSync("node " + _file).toString('utf8')).should.not.be.null;
-
+                
+                (execSync("echo |node " + _file).toString('utf8')).should.not.be.null;
+                
                 let pipeResult = execSync("echo pass this test|node " + _file + "|cat");
                 pipeResult.toString('utf8').indexOf('pass this test').should.equal(0);
 
@@ -62,6 +63,7 @@ describe('Module Creator', function () {
                 s.push(null);
                 var _a = '';
                 s.pipe(testModule.on('data', (d) => {
+                    console.log(d)
                     _a += d;
                 }).on('end', () => {
                     _a.should.equal('pipe test');
@@ -91,5 +93,5 @@ describe('Module Creator', function () {
         this.timeout(10000);
     });
 
-    after(cleanup);
+    //after(cleanup);
 });

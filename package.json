@@ -25,6 +25,7 @@
   "homepage": "https://github.com/TJKoury/union-station-module-system#readme",
   "dependencies": {
     "colors": "^1.1.2",
+    "koa": "^2.3.0",
     "lodash": "^4.0.0",
     "uuid": "^2.0.1"
   },
