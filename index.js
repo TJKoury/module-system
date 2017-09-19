@@ -7,9 +7,15 @@ const _ = require('lodash');
 const colors = require('colors');
 const commands = process.argv;
 /*REQUIRED_START*/
-const { Transform } = require('stream');
+const { Transform, Writable, Readable, Duplex } = require('stream');
 const tty = require('tty');
+
 /*NEW CODE HERE*/
+
+/**
+ * Add Your New Code Here, fellow Engineer!
+ * 
+ */
 
 /*END NEW CODE*/
 /*REQUIRED_END*/
@@ -112,14 +118,6 @@ module.exports = class union_station_module extends Transform {
       this[_prop] = module[_prop];
     }
 
-    /*Registry Checking Code */
-
-    if(!process.hasOwnProperty('union-station-registry')){
-      process['union-station-registry'] = {};
-    }
-
-    process['union-station-registry'][this.id] = module.exports;
-
     if (require.main === module) {
 
       if (argv) {
@@ -150,16 +148,16 @@ module.exports = class union_station_module extends Transform {
       }
     } else {
 
-      
+
     }
   }
-  
+
   /**
- * Returns module.
- * @method getModule
- *
- * @returns {object}
- **/
+   * Returns module.
+   * @method getModule
+   *
+   * @returns {object}
+   **/
 
   getModule() { return module };
 
@@ -182,10 +180,10 @@ module.exports = class union_station_module extends Transform {
    * @returns {null}
  **/
 
-  _flush (cb) {
+  _flush(cb) {
     this.push();
     cb();
-  
+
   };
 
 };  /* End Class */
@@ -198,6 +196,15 @@ module.exports = class union_station_module extends Transform {
  **/
 
 module.id = /*ID*/'0';
+
+/**
+ * Name delimiter.
+ * @property delimiter
+ *
+ * @returns {id}
+ **/
+
+module.delimiter = '__';
 
 /**
  * JSDoc3 compliant tag-parser method.
@@ -228,38 +235,24 @@ module.genDoc = function () {
 /**
  * Checks for Union-Station Registry
  * in the current process
- * @function checkRegistry
+ * @function registerModule
  *
  * @returns {string}
  **/
 
-module.checkRegistry = function () {
-  
-  var this_file = require('fs').readFileSync(module.filename, { encoding: 'utf8' });
-  var docs = this_file.match(/(\/\*\*([\s\S]*?)\*\/)$/gm);
-  var docsFinal = ["\n", "\n"];
-  for (var doc = 0; doc < docs.length; doc++) {
+module.registerModule = function () {
 
-    if (!docs[doc].match(/\@type/g)) {
-      docsFinal.push(docs[doc]);
+  if (!process.registry) {
+    process.registry = {};
 
-      if (docs[doc].match(/\*\*\//g)) {
-        docsFinal.push("\n");
-      }
-
-    }
   }
-  console.log(docsFinal.join("\n"));
+  
+  process.registry[module.id] = module.exports;
+
 };
 
-
-
-
-
-
-
-
-
+/*Add Module to current process Registry*/
+module.registerModule();
 
 /*REQUIRED_END*/
 var fs = require('fs');
@@ -290,11 +283,11 @@ module.generate = function (argv) {
 
   argv.packageJSON.id = module_uuid;
   var _filename = [argv.prefix, argv.name];
-  var _delimiter = "__";
+
   for (var _f = 0; _f < _filename.length; _f++) {
-    _filename[_f] = _filename[_f].replace(new RegExp(_delimiter, 'gi'), "").replace(/\s/g, "");
+    _filename[_f] = _filename[_f].replace(new RegExp(module.delimiter, 'gi'), "").replace(/\s/g, "");
   }
-  argv.packageJSON.name = _filename.join(_delimiter);
+  argv.packageJSON.name = _filename.join(module.delimiter);
 
   if (!fs.existsSync(argv.nodeModulesPath)) {
     fs.mkdirSync(argv.nodeModulesPath);
@@ -306,12 +299,13 @@ module.generate = function (argv) {
   if (!fs.existsSync(modulePath)) {
 
     // JS code to put in new module
+    _filename.push(module_uuid);
     var indexJS = "#!/usr/bin/env node\n\n" +
       fs.readFileSync(module.filename, { encoding: 'utf8' })
         .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
         .join("")
         .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
-        .replace("union_station_module", _filename.join(_delimiter) + "\u115F" + module_uuid)
+        .replace("union_station_module", _filename.join(module.delimiter))
         .replace(/\|'generate'.*\)}}/g, ")}}")
         .replace(/\/\*ID\*\/'0'/g, "'" + module_uuid + "'");
 
@@ -350,7 +344,6 @@ module.generate = function (argv) {
 
   }
 }
-
 
 /*REQUIRED_START*/
 

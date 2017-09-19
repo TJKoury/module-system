@@ -35,7 +35,7 @@ describe('Module Creator', function () {
     cleanup(function () {})
     it('should create valid module in a new folder', function (done) {
         before(cleanup);
-        resultPath = moduleCreator.generate(moduleOptions);
+        resultPath = (new process.registry[0]).generate(moduleOptions);
         console.log('Created: ' + resultPath + '\n');
         resultPath.should.not.be.false;
         done();
@@ -56,6 +56,10 @@ describe('Module Creator', function () {
 
                 const testModuleClass = require(_file);
                 let testModule = new testModuleClass();
+                
+                console.log('\n', 'Registered Classes: ', (process.registry));
+                Object.keys(process.registry).length.should.not.be.below(1);
+                
                 var Readable = require('stream').Readable;
                 var s = new Readable();
                 s._read = () => { };
@@ -84,7 +88,7 @@ describe('Module Creator', function () {
                 fs.chmodSync(_file, "777");
 
                 (execSync("node " + _file + " --method genDoc").toString('utf8')).should.not.be.null;
-
+                (execSync("node " + _file + " --method genDoc").toString('utf8')).should.not.be.null;
                 done();
 
             }
