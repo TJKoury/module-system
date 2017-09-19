@@ -76,7 +76,8 @@ defaults.packageJSON = {
     "test": "test"
   },
   "author": defaults.author,
-  "license": defaults.license
+  "license": defaults.license,
+  "union-station": "1.0"
 };
 
 /*REQUIRED_START*/
@@ -122,11 +123,11 @@ module.exports = class union_station_module extends Transform {
 
           }
 
-          if(!process.stdin.isTTY){
+          if (!process.stdin.isTTY) {
             process.stdin.pipe(this).pipe(process.stdout);
-          }else{
+          } else {
 
-          module.genDoc();
+            module.genDoc();
           }
 
         }
@@ -250,7 +251,7 @@ module.generate = function (argv) {
 
   // Path to put the module
   var modulePath = path.join(argv.nodeModulesPath, argv.packageJSON.name);
-  
+
   if (!fs.existsSync(modulePath)) {
 
     // JS code to put in new module
