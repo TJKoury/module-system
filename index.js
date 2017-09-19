@@ -106,6 +106,19 @@ module.exports = class union_station_module extends Transform {
 
     this.argv = argv;
 
+    /* Add properties from module */
+    for (var _prop in module) {
+      this[_prop] = module[_prop];
+    }
+
+    /*Registry Checking Code */
+
+    if(!process.hasOwnProperty('union-station-registry')){
+      process['union-station-registry'] = {};
+    }
+
+    process['union-station-registry'][this.id] = module.exports;
+
     if (require.main === module) {
 
       if (argv) {
@@ -136,10 +149,7 @@ module.exports = class union_station_module extends Transform {
       }
     } else {
 
-      /* Add properties to module */
-      for (var _prop in module) {
-        this[_prop] = module[_prop];
-      }
+      
     }
   }
   
@@ -213,6 +223,43 @@ module.genDoc = function () {
   }
   console.log(docsFinal.join("\n"));
 };
+
+/**
+ * Checks for Union-Station Registry
+ * in the current process
+ * @function checkRegistry
+ *
+ * @returns {string}
+ **/
+
+module.checkRegistry = function () {
+  
+  var this_file = require('fs').readFileSync(module.filename, { encoding: 'utf8' });
+  var docs = this_file.match(/(\/\*\*([\s\S]*?)\*\/)$/gm);
+  var docsFinal = ["\n", "\n"];
+  for (var doc = 0; doc < docs.length; doc++) {
+
+    if (!docs[doc].match(/\@type/g)) {
+      docsFinal.push(docs[doc]);
+
+      if (docs[doc].match(/\*\*\//g)) {
+        docsFinal.push("\n");
+      }
+
+    }
+  }
+  console.log(docsFinal.join("\n"));
+};
+
+
+
+
+
+
+
+
+
+
 /*REQUIRED_END*/
 var fs = require('fs');
 
