@@ -76,7 +76,8 @@ defaults.packageJSON = {
     "test": "test"
   },
   "author": defaults.author,
-  "license": defaults.license
+  "license": defaults.license,
+  "union-station": "1.0"
 };
 
 /*REQUIRED_START*/
