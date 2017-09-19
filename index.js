@@ -110,7 +110,7 @@ module.exports = class union_station_module extends Transform {
 
       if (argv) {
 
-        if (argv.method && argv.method in module) {
+        if (argv.method && argv.method in module && typeof module[argv.method] === 'function') {
 
           return module[argv.method](argv);
 
@@ -122,11 +122,11 @@ module.exports = class union_station_module extends Transform {
 
           }
 
-          if(!process.stdin.isTTY){
+          if (!process.stdin.isTTY) {
             process.stdin.pipe(this).pipe(process.stdout);
-          }else{
+          } else {
 
-          module.genDoc();
+            module.genDoc();
           }
 
         }
@@ -135,12 +135,49 @@ module.exports = class union_station_module extends Transform {
         throw Error('missing arguments object');
       }
     } else {
-      for (var _method in module) {
-        this[_method] = module[_method];
+
+      /* Add properties to module */
+      for (var _prop in module) {
+        this[_prop] = module[_prop];
       }
     }
   }
-};
+  
+  /**
+ * Returns module.
+ * @method getModule
+ *
+ * @returns {object}
+ **/
+
+  getModule() { return module };
+
+  /**
+   * Transform method
+   * @function _transform
+   *
+   * @returns {null}
+   **/
+
+  _transform(data, encoding, cb) {
+    let error = null;
+    cb(error, data);
+  };
+
+  /**
+   * Flush method
+   * @function _flush
+   *
+   * @returns {null}
+ **/
+
+  _flush (cb) {
+    this.push();
+    cb();
+  
+  };
+
+};  /* End Class */
 
 /**
  * Unique Identifier.
@@ -150,39 +187,6 @@ module.exports = class union_station_module extends Transform {
  **/
 
 module.id = /*ID*/'0';
-
-/**
- * Returns module.
- * @method getModule
- *
- * @returns {object}
- **/
-
-module.getModule = () => module;
-
-/**
- * Transform method
- * @function _transform
- *
- * @returns {null}
- **/
-
-module.exports.prototype._transform = function (data, encoding, cb) {
-  let error = null;
-  cb(error, data);
-};
-
-/**
- * Flush method
- * @function _flush
- *
- * @returns {null}
- **/
-
-module.exports.prototype._flush = function (cb) {
-  this.push();
-  cb();
-};
 
 /**
  * JSDoc3 compliant tag-parser method.
@@ -250,7 +254,7 @@ module.generate = function (argv) {
 
   // Path to put the module
   var modulePath = path.join(argv.nodeModulesPath, argv.packageJSON.name);
-  
+
   if (!fs.existsSync(modulePath)) {
 
     // JS code to put in new module
