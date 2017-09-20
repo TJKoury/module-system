@@ -217,7 +217,7 @@ module.id = /*ID*/'0';
  * Name delimiter.
  * @property delimiter
  *
- * @returns {id}
+ * @returns {string}
  **/
 
 module.delimiter = '__';
