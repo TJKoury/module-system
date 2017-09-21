@@ -131,7 +131,9 @@ module.exports = class union_station_module extends Transform {
 
     /* Add properties from module */
     for (var _prop in module) {
+
       this[_prop] = module[_prop];
+
     }
 
     if (require.main === module) {
@@ -147,20 +149,25 @@ module.exports = class union_station_module extends Transform {
           if (argv.method) {
 
             throw Error("\n Method '" + argv.method + "' does not exist.\nChoose method parameter '-method {method}' from options below:");
-
+            this.genDoc();
           }
 
           if (!process.stdin.isTTY) {
-            process.stdin.pipe(this).pipe(process.stdout);
-          } else {
 
-            module.genDoc();
+            process.stdin.pipe(this).pipe(process.stdout);
+
+          }else{
+
+            this.genDoc();
+          
           }
 
         }
+
       } else {
 
         throw Error('missing arguments object');
+
       }
     } else {
 
@@ -185,8 +192,11 @@ module.exports = class union_station_module extends Transform {
    **/
 
   _transform(data, encoding, cb) {
+
     let error = null;
+
     cb(error, data);
+
   };
 
   /**
@@ -197,7 +207,9 @@ module.exports = class union_station_module extends Transform {
  **/
 
   _flush(cb) {
+
     this.push();
+
     cb();
 
   };
@@ -232,20 +244,39 @@ module.delimiter = '__';
 module.genDoc = function () {
 
   var this_file = require('fs').readFileSync(module.filename, { encoding: 'utf8' });
+
   var docs = this_file.match(/(\/\*\*([\s\S]*?)\*\/)$/gm);
+
   var docsFinal = ["\n", "\n"];
+
   for (var doc = 0; doc < docs.length; doc++) {
 
     if (!docs[doc].match(/\@type/g)) {
+
       docsFinal.push(docs[doc]);
 
       if (docs[doc].match(/\*\*\//g)) {
+
         docsFinal.push("\n");
+
       }
 
     }
+
   }
-  console.log(docsFinal.join("\n"));
+
+  let documentation = docsFinal.join("\n");
+
+  if (require.main === module) {
+
+    console.log(documentation);
+
+  } else {
+
+    return documentation;
+
+  }
+
 };
 
 /**
@@ -253,17 +284,20 @@ module.genDoc = function () {
  * in the current process
  * @function registerModule
  *
- * @returns {string}
+ * @returns {boolean}
  **/
 
 module.registerModule = function () {
 
   if (!process.registry) {
+
     process.registry = {};
 
   }
-  
+
   process.registry[module.id] = module.exports;
+
+  return process.registry[module.id].id === this.id;
 
 };
 
@@ -292,21 +326,28 @@ module.generate = function (argv) {
 
   // Extends arguments with defaults
   argv = _.extend(defaults, argv);
+
   _.assign(argv.packageJSON, _.pick(defaults, _.keys(argv.packageJSON)));
 
   // Time-based UUID generated for module
   var module_uuid = uuid.v4().replace(/\-/g, "");
 
   argv.packageJSON.id = module_uuid;
+
   var _filename = [argv.prefix, argv.name];
 
   for (var _f = 0; _f < _filename.length; _f++) {
+
     _filename[_f] = _filename[_f].replace(new RegExp(module.delimiter, 'gi'), "").replace(/\s/g, "");
+
   }
+
   argv.packageJSON.name = _filename.join(module.delimiter);
 
   if (!fs.existsSync(argv.nodeModulesPath)) {
+
     fs.mkdirSync(argv.nodeModulesPath);
+
   }
 
   // Path to put the module
@@ -316,7 +357,9 @@ module.generate = function (argv) {
 
     // JS code to put in new module
     _filename.push(module_uuid);
+
     var indexJS = "#!/usr/bin/env node\n\n" +
+
       fs.readFileSync(module.filename, { encoding: 'utf8' })
         .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
         .join("")
@@ -328,10 +371,15 @@ module.generate = function (argv) {
     fs.mkdirSync(modulePath);
 
     fs.writeFileSync(
+
       path.join(modulePath, "package.json"),
+
       JSON.stringify(argv.packageJSON,
+
         null,
+
         4)
+
     );
 
     fs.writeFileSync(
@@ -344,11 +392,15 @@ module.generate = function (argv) {
     argv.path = path.join(argv.nodeModulesPath, argv.packageJSON.name);
 
     if (require.main == module) {
+
       console.log(argv.path);
+
     }
+
     return argv.path;
 
   } else {
+
     var error = ["Cannot Create Module: ",
       argv.packageJSON.name,
       " in ",
@@ -378,14 +430,23 @@ if (require.main == module) {
   } else {
 
     var _arguments = {};
+
     for (var i = 2; i < process.argv.length; i++) {
+
       if (i % 2 == 0) {
+
         if (process.argv[i].indexOf("-") == 0) {
+
           _arguments[process.argv[i].replace(/^-{1,2}/g, '')] = process.argv[i + 1];
+
         } else {
+
           throw Error("Option misconfigured: " + process.argv[i]);
+
         }
+
       }
+
     }
     //Check for stdin and stdout
 

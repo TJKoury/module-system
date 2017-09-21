@@ -14,7 +14,6 @@ const moduleFolderName = "union_station__" + moduleOptions.name;
 
 describe('Module Creator', function () {
     let fullPath = path.join(moduleOptions.nodeModulesPath, moduleFolderName);
-    console.log(fullPath)
     var testFiles = [
         path.join(fullPath, "package.json"),
         path.join(fullPath, "index.js")
@@ -38,6 +37,9 @@ describe('Module Creator', function () {
         resultPath = (new process.registry[0]).generate(moduleOptions);
         console.log('Created: ' + resultPath + '\n');
         resultPath.should.not.be.false;
+        var testModule = require('./'+moduleFolderName);
+        var tM = new testModule();
+        tM.genDoc().length.should.be.above(0);
         done();
     });
 
