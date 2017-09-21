@@ -88,8 +88,6 @@ describe('Module Creator', function () {
             if (i) {
                 let _file = path.resolve(file);
                 fs.chmodSync(_file, "777");
-
-                (execSync("node " + _file + " --method genDoc").toString('utf8')).should.not.be.null;
                 (execSync("node " + _file + " --method genDoc").toString('utf8')).should.not.be.null;
                 done();
 
