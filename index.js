@@ -100,7 +100,7 @@ defaults.packageJSON = {
   },
   "author": defaults.author,
   "license": defaults.license,
-  "union-station": "1.0"
+  "union-station": "1.0.0"
 };
 
 /*REQUIRED_START*/
