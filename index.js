@@ -35,6 +35,7 @@ const tty = require('tty');
 
 
 /*REQUIRED_END*/
+
 /**
  * @type{object}
  *
@@ -217,19 +218,16 @@ module.exports = class union_station_module extends Transform {
 };  /* End Class */
 
 /**
- * Unique Identifier.
- * @property id
- *
- * @returns {id}
+ * @type  {string}
+ * 
  **/
 
 module.id = /*ID*/'0';
 
 /**
  * Name delimiter.
- * @property delimiter
- *
- * @returns {string}
+ * @type {string} delimiter
+ * 
  **/
 
 module.delimiter = '__';
@@ -238,7 +236,7 @@ module.delimiter = '__';
  * JSDoc3 compliant tag-parser method.
  * @function genDoc
  *
- * @returns {string}
+ * @returns {string|null}
  **/
 
 module.genDoc = function () {
