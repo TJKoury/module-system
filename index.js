@@ -265,15 +265,15 @@ module.genDoc = function () {
 
 module.registerModule = function () {
 
-  if (!process.registry) {
+  if (!global.registry) {
 
-    process.registry = {};
+    global.registry = {};
 
   }
 
-  process.registry[module.id] = module.exports;
-  process.registry[module.id].package = package;
-  return process.registry[module.id].id === this.id;
+  global.registry[module.id] = module.exports;
+  global.registry[module.id].package = package;
+  return global.registry[module.id].id === this.id;
 
 };
 

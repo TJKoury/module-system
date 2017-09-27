@@ -34,7 +34,7 @@ describe('Module Creator', function () {
     cleanup(function () {})
     it('should create valid module in a new folder', function (done) {
         before(cleanup);
-        resultPath = (new process.registry[0]).generate(moduleOptions);
+        resultPath = (new global.registry[0]).generate(moduleOptions);
         console.log('Created: ' + resultPath + '\n');
         resultPath.should.not.be.false;
         var testModule = require('./'+moduleFolderName);
@@ -59,8 +59,8 @@ describe('Module Creator', function () {
                 const testModuleClass = require(_file);
                 let testModule = new testModuleClass();
                 
-                console.log('\n', 'Registered Classes: ', (process.registry));
-                Object.keys(process.registry).length.should.not.be.below(1);
+                console.log('\n', 'Registered Classes: ', (global.registry));
+                Object.keys(global.registry).length.should.not.be.below(1);
                 
                 var Readable = require('stream').Readable;
                 var s = new Readable();
