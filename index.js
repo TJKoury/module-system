@@ -9,7 +9,7 @@ const commands = process.argv;
 /*REQUIRED_START*/
 
 const { Transform, Writable, Readable, Duplex } = require('stream');
-const package = require('./package.json');
+const _package = require('./package.json');
 const tty = require('tty');
 
 /*REQUIRED_END*/
@@ -203,6 +203,13 @@ module.exports = class union_station_module extends Transform {
 module.id = /*ID*/'0';
 
 /**
+ * @type  {string}
+ * 
+ **/
+
+module.name = /*NAME*/'';
+
+/**
  * Name delimiter.
  * @type {string} delimiter
  * 
@@ -272,7 +279,7 @@ module.registerModule = function () {
   }
 
   global.registry[module.id] = module.exports;
-  global.registry[module.id].package = package;
+  global.registry[module.id].package = _package;
   return global.registry[module.id].id === this.id;
 
 };
@@ -342,7 +349,8 @@ module.generate = function (argv) {
         .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
         .replace("union_station_module", _filename.join(module.delimiter))
         .replace(/\|'generate'.*\)}}/g, ")}}")
-        .replace(/\/\*ID\*\/'0'/g, "'" + module_uuid + "'");
+        .replace(/\/\*ID\*\/'0'/g, "'" + module_uuid + "'")
+        .replace(/\/\*NAME\*\/''/g, "'" + [argv.prefix, argv.name].join(module.delimiter) + "'");
 
     fs.mkdirSync(modulePath);
 
