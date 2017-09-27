@@ -207,7 +207,7 @@ module.id = /*ID*/'0';
  * 
  **/
 
-module.name = /*NAME*/'';
+module.name = /*NAME*/'union_station__module_creator';
 
 /**
  * Name delimiter.
@@ -278,9 +278,10 @@ module.registerModule = function () {
 
   }
 
-  global.registry[module.id] = module.exports;
-  global.registry[module.id].package = _package;
-  return global.registry[module.id].id === this.id;
+  global.registry[module.name] = module.exports;
+  global.registry[module.name].package = _package;
+  global.registry[module.id] = global.registry[module.name];
+  return global.registry[module.name].id === this.id;
 
 };
 
@@ -350,7 +351,7 @@ module.generate = function (argv) {
         .replace("union_station_module", _filename.join(module.delimiter))
         .replace(/\|'generate'.*\)}}/g, ")}}")
         .replace(/\/\*ID\*\/'0'/g, "'" + module_uuid + "'")
-        .replace(/\/\*NAME\*\/''/g, "'" + [argv.prefix, argv.name].join(module.delimiter) + "'");
+        .replace(/\/\*NAME\*\/'union_station__module_creator'/g, "'" + [argv.prefix, argv.name].join(module.delimiter) + "'");
 
     fs.mkdirSync(modulePath);
 
