@@ -9,6 +9,7 @@ const commands = process.argv;
 /*REQUIRED_START*/
 
 const { Transform, Writable, Readable, Duplex } = require('stream');
+const package = require('./package.json');
 const tty = require('tty');
 
 /*REQUIRED_END*/
@@ -271,7 +272,7 @@ module.registerModule = function () {
   }
 
   process.registry[module.id] = module.exports;
-
+  process.registry[module.id].package = package;
   return process.registry[module.id].id === this.id;
 
 };
