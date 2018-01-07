@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
-const settings = require('./package.json');
-const uuid = require('uuid');
-const path = require('path');
-const _ = require('lodash');
-const colors = require('colors');
-const commands = process.argv;
+const settings = require('./package.json')
+const uuid = require('uuid')
+const path = require('path')
+const _ = require('lodash')
+const commands = process.argv
+const union_station_module_class = require('./union_station_module.class')
+
 /*REQUIRED_START*/
 
-const { Transform, Writable, Readable, Duplex } = require('stream');
-const _package = require('./package.json');
-const tty = require('tty');
+const _package = require('./package.json')
+const tty = require('tty')
 
 /*REQUIRED_END*/
 
@@ -19,49 +19,49 @@ const tty = require('tty');
  *
  * */
 
-const defaults = {} || settings.union_station_module_system.defaults;
+const defaults = {} || settings.union_station_module_system.defaults
 
 /**
  * @type{string}
  *
  * */
-defaults.nodeModulesPath = "node_modules";
+defaults.nodeModulesPath = "node_modules"
 
 /**
  * @type{string}
  *
  * */
-defaults.prefix = "union_station";
+defaults.prefix = "union_station"
 
 /**
  * @type{string}
  *
  * */
-defaults.description = "empty_module";
+defaults.description = "empty_module"
 
 /**
  * @type{string}
  *
  * */
-defaults.name = "empty_module";
+defaults.name = "empty_module"
 
 /**
  * @type{string}
  *
  * */
-defaults.version = "0.0.0";
+defaults.version = "0.0.0"
 
 /**
  * @type{string}
  *
  * */
-defaults.author = "union_station_module_system";
+defaults.author = "union_station_module_system"
 
 /**
  * @type{string}
  *
  * */
-defaults.license = "ISC";
+defaults.license = "ISC"
 
 /**
  * @type{object}
@@ -79,11 +79,11 @@ defaults.packageJSON = {
   "author": defaults.author,
   "license": defaults.license,
   "union-station": "1.0.0"
-};
+}
 
 /*REQUIRED_START*/
 /**
- * Main export from this module.
+ * Main export from this this.
  * It returns a class with a constructor that inherits
  * from stream.Transform.
  * (https://nodejs.org/api/stream.html#stream_class_stream_transform).
@@ -101,304 +101,142 @@ defaults.packageJSON = {
  * @returns {object}
  **/
 
-module.exports = class union_station_module extends Transform {
+this.exports = class union_station_module extends union_station_module_class {
   constructor(argv) {
 
-    super(argv);
+    super(argv)
 
-    this.argv = argv;
+    /**
+     * Returns this.
+     * @method getModule
+     *
+     * @returns {object}
+     **/
 
-    /* Add properties from module */
-    for (var _prop in module) {
+    this.getModule = function () { console.log('module'); return module }
 
-      this[_prop] = module[_prop];
+    /**
+     * @type  {string}
+     * 
+     **/
 
-    }
+    this.name = /*NAME*/'union_station__module_creator'
 
-    if (require.main === module) {
+    /*REQUIRED_END*/
+    var fs = require('fs');
 
-      if (argv) {
+    /**
+     * Creates New this.
+     * @method generate
+     *
+     * @param    {object}    argv - Input options (from cmdline -key value)
+     * @property {string}    argv.prefix - Prefix for module
+     * @property {string}    argv.description
+     * @property {string}    argv.nodeModulesPath - Path to put module
+     * @property {string}    argv.name
+     * @property {string}    argv.version
+     * @property {string}    argv.author
+     * @property {string}    argv.license
+     *
+     * @returns {string}
+     **/
+    
+    this.generate = function (argv) {
 
-        if (argv.method && argv.method in module && typeof module[argv.method] === 'function') {
+      // Extends arguments with defaults
+      argv = _.extend(defaults, argv);
 
-          module[argv.method](argv)
+      _.assign(argv.packageJSON, _.pick(defaults, _.keys(argv.packageJSON)));
 
-        } else {
+      // Time-based UUID generated for module
+      var module_uuid = uuid.v4().replace(/\-/g, "");
 
-          if (argv.method) {
+      argv.packageJSON.id = module_uuid;
 
-            throw Error("\n Method '" + argv.method + "' does not exist.\nChoose method parameter '-method {method}' from options below:");
-            this.genDoc();
-          }
+      var _filename = [argv.prefix, argv.name];
 
-          if (!process.stdin.isTTY) {
+      for (var _f = 0; _f < _filename.length; _f++) {
 
-            process.stdin.pipe(this).pipe(process.stdout);
+        _filename[_f] = _filename[_f].replace(new RegExp(this.delimiter, 'gi'), "").replace(/\s/g, "");
 
-          }else{
+      }
 
-            this.genDoc();
-          
-          }
+      argv.packageJSON.name = _filename.join(this.delimiter);
+
+      if (!fs.existsSync(argv.nodeModulesPath)) {
+
+        fs.mkdirSync(argv.nodeModulesPath);
+
+      }
+
+      // Path to put the module
+      var modulePath = path.join(argv.nodeModulesPath, argv.packageJSON.name);
+
+      if (!fs.existsSync(modulePath)) {
+
+        // JS code to put in new module
+        _filename.push(module_uuid);
+
+        var indexJS = "#!/usr/bin/env node\n\n" +
+
+          fs.readFileSync(this.filename, { encoding: 'utf8' })
+            .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
+            .join("")
+            .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
+            .replace("union_station_module", _filename.join(this.delimiter))
+            .replace(/\|'generate'.*\)}}/g, ")}}")
+            .replace(/\/\*ID\*\/'0'/g, "'" + module_uuid + "'")
+            .replace(/\/\*NAME\*\/'union_station__module_creator'/g, "'" + [argv.prefix, argv.name].join(this.delimiter) + "'");
+
+        fs.mkdirSync(modulePath);
+
+        fs.writeFileSync(
+
+          path.join(modulePath, "package.json"),
+
+          JSON.stringify(argv.packageJSON,
+
+            null,
+
+            4)
+
+        );
+
+        fs.writeFileSync(
+          path.join(modulePath, argv.packageJSON.main),
+          indexJS
+        );
+
+        // output message
+
+        argv.path = path.join(argv.nodeModulesPath, argv.packageJSON.name);
+
+        if (require.main == module) {
+
+          console.log(argv.path);
 
         }
 
+        return argv.path;
+
       } else {
 
-        throw Error('missing arguments object');
+        var error = ["Cannot Create Module: ",
+          argv.packageJSON.name,
+          " in ",
+          modulePath,
+          ", Folder Already Exists."
+        ].join(" ");
+
+        throw Error(error);
 
       }
-    } else {
-
-
     }
+    /*REQUIRED_START*/
   }
 
-  /**
-   * Returns module.
-   * @method getModule
-   *
-   * @returns {object}
-   **/
+}  /* End Class */
 
-  getModule() { return module };
-
-  /**
-   * Transform method
-   * @function _transform
-   *
-   * @returns {null}
-   **/
-
-  _transform(data, encoding, cb) {
-
-    let error = null;
-
-    cb(error, data);
-
-  };
-
-  /**
-   * Flush method
-   * @function _flush
-   *
-   * @returns {null}
- **/
-
-  _flush(cb) {
-
-    this.push();
-
-    cb();
-
-  };
-
-};  /* End Class */
-
-/**
- * @type  {string}
- * 
- **/
-
-module.id = /*ID*/'0';
-
-/**
- * @type  {string}
- * 
- **/
-
-module.name = /*NAME*/'union_station__module_creator';
-
-/**
- * Name delimiter.
- * @type {string} delimiter
- * 
- **/
-
-module.delimiter = '__';
-
-/**
- * JSDoc3 compliant tag-parser method.
- * @function genDoc
- *
- * @returns {string|null}
- **/
-
-module.genDoc = function () {
-
-  var this_file = require('fs').readFileSync(module.filename, { encoding: 'utf8' });
-
-  var docs = this_file.match(/(\/\*\*([\s\S]*?)\*\/)$/gm);
-
-  var docsFinal = ["\n", "\n"];
-
-  for (var doc = 0; doc < docs.length; doc++) {
-
-    if (!docs[doc].match(/\@type/g)) {
-
-      docsFinal.push(docs[doc]);
-
-      if (docs[doc].match(/\*\*\//g)) {
-
-        docsFinal.push("\n");
-
-      }
-
-    }
-
-  }
-
-  let documentation = docsFinal.join("\n");
-
-  if (require.main === module) {
-
-    console.log(documentation);
-
-  } else {
-
-    return documentation;
-
-  }
-
-};
-
-/**
- * Checks for Union-Station Registry
- * in the current process
- * @function registerModule
- *
- * @returns {boolean}
- **/
-
-module.registerModule = function () {
-
-  if (!global.registry) {
-
-    global.registry = {};
-
-  }
-
-  global.registry[module.name] = module.exports;
-  global.registry[module.name].package = _package;
-  global.registry[module.id] = global.registry[module.name];
-  return global.registry[module.name].id === this.id;
-
-};
-
-/*Add Module to current process Registry*/
-module.registerModule();
-
-/*REQUIRED_END*/
-var fs = require('fs');
-
-/**
- * Creates New Module.
- * @method generate
- *
- * @param    {object}    argv - Input options (from cmdline -key value)
- * @property {string}    argv.prefix - Prefix for module
- * @property {string}    argv.description
- * @property {string}    argv.nodeModulesPath - Path to put module
- * @property {string}    argv.name
- * @property {string}    argv.version
- * @property {string}    argv.author
- * @property {string}    argv.license
- *
- * @returns {string}
- **/
-module.generate = function (argv) {
-
-  // Extends arguments with defaults
-  argv = _.extend(defaults, argv);
-
-  _.assign(argv.packageJSON, _.pick(defaults, _.keys(argv.packageJSON)));
-
-  // Time-based UUID generated for module
-  var module_uuid = uuid.v4().replace(/\-/g, "");
-
-  argv.packageJSON.id = module_uuid;
-
-  var _filename = [argv.prefix, argv.name];
-
-  for (var _f = 0; _f < _filename.length; _f++) {
-
-    _filename[_f] = _filename[_f].replace(new RegExp(module.delimiter, 'gi'), "").replace(/\s/g, "");
-
-  }
-
-  argv.packageJSON.name = _filename.join(module.delimiter);
-
-  if (!fs.existsSync(argv.nodeModulesPath)) {
-
-    fs.mkdirSync(argv.nodeModulesPath);
-
-  }
-
-  // Path to put the module
-  var modulePath = path.join(argv.nodeModulesPath, argv.packageJSON.name);
-
-  if (!fs.existsSync(modulePath)) {
-
-    // JS code to put in new module
-    _filename.push(module_uuid);
-
-    var indexJS = "#!/usr/bin/env node\n\n" +
-
-      fs.readFileSync(module.filename, { encoding: 'utf8' })
-        .match(/(\/\*REQUIRED_START\*\/)[^~]*?(\/\*REQUIRED_END\*\/)/g)
-        .join("")
-        .replace(/\/\*REQUIRED_((START)|(END))\*\//g, "")
-        .replace("union_station_module", _filename.join(module.delimiter))
-        .replace(/\|'generate'.*\)}}/g, ")}}")
-        .replace(/\/\*ID\*\/'0'/g, "'" + module_uuid + "'")
-        .replace(/\/\*NAME\*\/'union_station__module_creator'/g, "'" + [argv.prefix, argv.name].join(module.delimiter) + "'");
-
-    fs.mkdirSync(modulePath);
-
-    fs.writeFileSync(
-
-      path.join(modulePath, "package.json"),
-
-      JSON.stringify(argv.packageJSON,
-
-        null,
-
-        4)
-
-    );
-
-    fs.writeFileSync(
-      path.join(modulePath, argv.packageJSON.main),
-      indexJS
-    );
-
-    // output message
-
-    argv.path = path.join(argv.nodeModulesPath, argv.packageJSON.name);
-
-    if (require.main == module) {
-
-      console.log(argv.path);
-
-    }
-
-    return argv.path;
-
-  } else {
-
-    var error = ["Cannot Create Module: ",
-      argv.packageJSON.name,
-      " in ",
-      modulePath,
-      ", Folder Already Exists."
-    ].join(" ");
-
-    throw Error(error);
-
-  }
-}
-
-/*REQUIRED_START*/
 
 /*
   TODO:
@@ -410,11 +248,11 @@ if (require.main == module) {
 
   if (process.argv.length % 2 !== 0) {
 
-    throw Error("Argument Missing or unmatched: " + process.argv.slice(2));
+    throw Error("Argument Missing or unmatched: " + process.argv.slice(2))
 
   } else {
 
-    var _arguments = {};
+    var _arguments = {}
 
     for (var i = 2; i < process.argv.length; i++) {
 
@@ -422,11 +260,11 @@ if (require.main == module) {
 
         if (process.argv[i].indexOf("-") == 0) {
 
-          _arguments[process.argv[i].replace(/^-{1,2}/g, '')] = process.argv[i + 1];
+          _arguments[process.argv[i].replace(/^-{1,2}/g, '')] = process.argv[i + 1]
 
         } else {
 
-          throw Error("Option misconfigured: " + process.argv[i]);
+          throw Error("Option misconfigured: " + process.argv[i])
 
         }
 
@@ -434,8 +272,8 @@ if (require.main == module) {
 
     }
     //Check for stdin and stdout
-
-    new module.exports(_arguments);
+    _arguments.isRequireMain = true
+    new this.exports(_arguments)
 
   }
 
