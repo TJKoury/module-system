@@ -121,7 +121,7 @@ module.exports = class union_station_module extends Transform {
 
         if (argv.method && argv.method in module && typeof module[argv.method] === 'function') {
 
-          return module[argv.method](argv);
+          module[argv.method](argv)
 
         } else {
 
