@@ -2,6 +2,8 @@
 
 const _package = require('./package.json')
 const tty = require('tty')
+const parser = require('comment-parser')
+const fs = require('fs')
 
 /**
  * Main export from this module.
@@ -94,35 +96,11 @@ module.exports = class union_station_module {
 
     this.genDoc = function () {
 
-      var this_file = require('fs').readFileSync(require.main.filename, { encoding: 'utf8' })
-
-      var docs = this_file.match(/(\/\*\*([\s\S]*?)\*\/)$/gm)
-      docs.forEach((row,i)=>{
-      docs[i] = docs[i].replace(/\s\s/g, ' ')
-      })
-      var docsFinal = ["\n", "\n"]
-
-      for (var doc = 0; doc < docs.length; doc++) {
-
-        if (!docs[doc].match(/\@type/g)) {
-
-          docsFinal.push(docs[doc]);
-
-          if (docs[doc].match(/\*\*\//g)) {
-
-            docsFinal.push("\n")
-
-          }
-
-        }
-
-      }
-
-      let documentation = docsFinal.join("\n");
+      let documentation = parser(fs.readFileSync(require.main.filename, { encoding: 'utf8' }))
 
       if (argv.isRequireMain) {
 
-        console.log(documentation)
+        console.log(JSON.stringify(documentation, null, 4))
 
       } else {
 
