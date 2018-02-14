@@ -1,0 +1,13 @@
+{
+    "name": "test__test",
+    "version": "0.1",
+    "description": "a test module",
+    "main": "index.js",
+    "scripts": {
+        "test": "test"
+    },
+    "author": "tjkoury",
+    "license": "ISC",
+    "union-station": "1.0.0",
+    "id": "d6807e2a4bb44c5ab26fb1203274d691"
+}
